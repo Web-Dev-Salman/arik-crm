@@ -1,11 +1,15 @@
+import { auth } from "@/lib/auth";
 import { KpiCard } from "@/components/shared/kpi-card";
 import { StatusBadge } from "@/components/shared/status-badge";
 
-export default function DashboardPage() {
+export default async function DashboardPage() {
+  const session = await auth();
+  const firstName = session?.user?.name?.split(" ")[0] ?? "there";
+
   return (
     <div className="space-y-6">
       <h1 className="text-xl font-bold text-foreground">
-        Good morning, Alex 👋
+        Good morning, {firstName} 👋
       </h1>
 
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">

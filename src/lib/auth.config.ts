@@ -29,21 +29,19 @@ export const authConfig = {
 
       return !!auth?.user; // everything else requires a session
     },
-    // Runs when a token is created/updated: copy our fields INTO the token
     jwt({ token, user }) {
       if (user) {
-        token.id = (user as any).id;
-        token.role = (user as any).role;
-        token.staffRole = (user as any).staffRole;
+        token.id = user.id as string;
+        token.role = user.role;
+        token.staffRole = user.staffRole;
       }
       return token;
     },
-    // Runs when a session is read: copy token fields OUT to what the app sees
     session({ session, token }) {
       if (session.user) {
-        (session.user as any).id = token.id;
-        (session.user as any).role = token.role;
-        (session.user as any).staffRole = token.staffRole;
+        session.user.id = token.id as string;
+        session.user.role = token.role as "staff" | "client" | "corporate";
+        session.user.staffRole = token.staffRole as "admin" | "consultant" | undefined;
       }
       return session;
     },
