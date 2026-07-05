@@ -1,49 +1,33 @@
 import { cn } from "@/lib/utils";
 
-/** Semantic tones available across the design system */
-type Tone = "success" | "warning" | "error" | "info" | "neutral";
+export type StatusTone = "info" | "success" | "warning" | "error" | "neutral";
 
-/** Business statuses → semantic tone. ONE place. Extend as modules grow. */
-const STATUS_TONE: Record<string, Tone> = {
-  // Case / filing lifecycle
-  "on track": "success",
-  approved: "success",
-  verified: "success",
-  active: "info",
-  filed: "info",
-  "in review": "warning",
-  "action needed": "warning",
-  waiting: "neutral",
-  overdue: "error",
-  refused: "error",
-};
-
-const TONE_CLASSES: Record<Tone, string> = {
+const tones: Record<StatusTone, string> = {
+  info: "bg-info-soft text-info-text",
   success: "bg-success-soft text-success-text",
   warning: "bg-warning-soft text-warning-text",
   error: "bg-error-soft text-error-text",
-  info: "bg-info-soft text-info-text",
   neutral: "bg-muted text-muted-foreground",
 };
 
-type StatusBadgeProps = {
-  status: string;
-  /** Escape hatch: force a tone when the status text is unusual */
-  tone?: Tone;
+export function StatusBadge({
+  tone,
+  children,
+  className,
+}: {
+  tone: StatusTone;
+  children: React.ReactNode;
   className?: string;
-};
-
-export function StatusBadge({ status, tone, className }: StatusBadgeProps) {
-  const resolved: Tone = tone ?? STATUS_TONE[status.toLowerCase()] ?? "neutral";
+}) {
   return (
     <span
       className={cn(
         "inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold",
-        TONE_CLASSES[resolved],
+        tones[tone],
         className
       )}
     >
-      {status}
+      {children}
     </span>
   );
 }

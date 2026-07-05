@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { dbConnect } from "../../../lib/db";
+import { dbConnect } from "@/lib/db";
 
 export async function GET() {
   try {
@@ -11,7 +11,13 @@ export async function GET() {
   } catch (err) {
     console.error("Health check failed:", err);
     return NextResponse.json(
-      { success: false, error: { code: "DB_CONNECTION_FAILED", message: "Could not reach database" } },
+      {
+        success: false,
+        error: {
+          code: "DB_CONNECTION_FAILED",
+          message: "Could not reach database",
+        },
+      },
       { status: 500 }
     );
   }

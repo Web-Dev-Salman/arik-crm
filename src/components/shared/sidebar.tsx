@@ -15,7 +15,9 @@ export function Sidebar() {
       <div className="flex items-center gap-2.5 px-5 py-5">
         <Image src="/arik-seal-red.png" alt="ARIK" width={32} height={32} />
         <div className="leading-tight">
-          <div className="text-sm font-extrabold tracking-wide text-foreground">ARIK</div>
+          <div className="text-sm font-extrabold tracking-wide text-foreground">
+            ARIK
+          </div>
           <div className="text-[10px] font-medium uppercase tracking-widest text-muted-foreground">
             Immigration Consulting
           </div>
@@ -45,7 +47,7 @@ export function Sidebar() {
         })}
       </nav>
 
-      {/* User (static placeholder until auth in Week 3) */}
+      {/* User (static placeholder until auth is wired) */}
       <div className="flex items-center gap-3 border-t border-sidebar-border px-4 py-4">
         <div className="flex size-8 items-center justify-center rounded-full bg-primary text-xs font-bold text-primary-foreground">
           AM

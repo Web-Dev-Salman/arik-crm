@@ -13,10 +13,10 @@ const cached = (global as any).mongoose ?? { conn: null, promise: null };
 (global as any).mongoose = cached;
 
 export async function dbConnect() {
-  if (cached.conn) return cached.conn;          // already connected → reuse
-  if (!cached.promise) {                        // not connecting yet → start
+  if (cached.conn) return cached.conn; // already connected -> reuse
+  if (!cached.promise) {
     cached.promise = mongoose.connect(MONGODB_URI!, { bufferCommands: false });
   }
-  cached.conn = await cached.promise;           // wait for the in-flight attempt
+  cached.conn = await cached.promise;
   return cached.conn;
 }
