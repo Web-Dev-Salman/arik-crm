@@ -9,6 +9,7 @@ import {
   Library,
   MessagesSquare,
   BarChart3,
+  House,
   Settings,
   type LucideIcon,
 } from "lucide-react";
@@ -20,6 +21,7 @@ export type NavItem = {
 };
 
 export const portalNav: NavItem[] = [
+  { label: "Home", href: "/home", icon: House },
   { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
   { label: "Cases", href: "/cases", icon: FolderOpen },
   { label: "Eligibility", href: "/eligibility", icon: Calculator },
