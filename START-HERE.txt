@@ -1,0 +1,57 @@
+ARIK CRM — COMPLETE PROJECT (Week 1 Step 1 through Week 3 Step 4)
+==================================================================
+Contains: all source code, all config files, public assets, ready
+.env.local (new a6uezif cluster, explicit-host URI, fresh AUTH_SECRET),
+and the DNS diagnostic scripts under scripts/.
+Does NOT contain: node_modules (rebuilt by install), .next (build cache),
+.git (your history lives on GitHub — restored in step 5).
+
+HOW TO SET UP (in order — 10 minutes total)
+
+1. Make a CLEAN project folder (do not extract inside an old mess):
+     G:\website work\crm\Arik-CRM\arik-crm
+   If the old folder is half-broken, rename it to arik-crm-old first,
+   create a fresh arik-crm, and copy this zip's CONTENTS into it.
+   (Extract the zip in Downloads, then COPY files over — never extract
+   archives directly inside the project. House rule from now on.)
+
+2. Install dependencies:
+     pnpm install
+   If pnpm asks to approve build scripts: pnpm approve-builds -> tick all -> y.
+
+3. Run it:
+     pnpm dev
+
+4. Verify the ladder:
+     a) http://localhost:3000/api/dev-seed
+        expect {"success":true,...,"database":"arik-crm",...}
+     b) http://localhost:3000/login
+        admin@arikconsulting.ca / ChangeMe123!  -> dashboard,
+        your name bottom-left, sign-out icon works
+     c) Settings -> invite client2@test.com (Client) -> copy link
+        -> open link in INCOGNITO -> set password -> login as client
+     If (a) fails with "Server selection timed out": Atlas -> Network
+     Access -> Add Current IP (new cluster project needs it).
+
+5. Reconnect Git history (GitHub has everything through your last push):
+     cd "G:\website work\crm\Arik-CRM"
+     git clone https://github.com/Web-Dev-Salman/arik-crm.git history-temp
+     Move-Item history-temp\.git arik-crm\.git
+     Remove-Item history-temp -Recurse -Force
+     cd arik-crm
+     git status        (shows the newer work as modified/untracked - correct)
+
+6. COMMIT THE WHOLE RESTORED STATE:
+     git add .
+     git commit -m "Restore full project through Week 3 Step 4 (invitations)"
+     git push
+   Then verify on github.com that src/modules/invitations is visible.
+
+7. NEW RULES (they end the recovery era):
+   - Something works -> commit immediately. "wip" is a fine message.
+   - Zips extract in Downloads only; copy files in.
+   - Never select-all-delete inside the project folder.
+
+NOTE: .env.local in this zip contains the database password you sent in
+chat. After everything is green, rotate it (Atlas -> Database Access ->
+arik_dev -> Edit Password) and update the line in .env.local. 2 minutes.

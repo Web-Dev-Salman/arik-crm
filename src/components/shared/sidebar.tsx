@@ -35,18 +35,20 @@ export function Sidebar({ user }: { user: SidebarUser }) {
 
   return (
     <aside className="flex h-screen w-60 shrink-0 flex-col border-r border-sidebar-border bg-sidebar">
-      {/* Brand — unchanged */}
+      {/* Brand */}
       <div className="flex items-center gap-2.5 px-5 py-5">
         <Image src="/arik-seal-red.png" alt="ARIK" width={32} height={32} />
         <div className="leading-tight">
-          <div className="text-sm font-extrabold tracking-wide text-foreground">ARIK</div>
+          <div className="text-sm font-extrabold tracking-wide text-foreground">
+            ARIK
+          </div>
           <div className="text-[10px] font-medium uppercase tracking-widest text-muted-foreground">
             Immigration Consulting
           </div>
         </div>
       </div>
 
-      {/* Navigation — unchanged */}
+      {/* Navigation */}
       <nav className="flex-1 space-y-0.5 overflow-y-auto px-3 py-2">
         {portalNav.map((item) => {
           const active =
@@ -69,7 +71,7 @@ export function Sidebar({ user }: { user: SidebarUser }) {
         })}
       </nav>
 
-      {/* User — now real */}
+      {/* User — real session data */}
       <div className="flex items-center gap-3 border-t border-sidebar-border px-4 py-4">
         <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-primary text-xs font-bold text-primary-foreground">
           {initials(user.name)}
