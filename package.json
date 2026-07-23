@@ -20,6 +20,7 @@
     "next-auth": "5.0.0-beta.31",
     "react": "19.2.4",
     "react-dom": "19.2.4",
+    "recharts": "^3.10.0",
     "resend": "^6.18.0",
     "shadcn": "^4.13.0",
     "tailwind-merge": "^3.6.0",
