@@ -17,7 +17,7 @@ const contactSchema = new Schema(
     corporateAccountId: { type: Schema.Types.ObjectId, ref: "CorporateAccount" },
     source: {
       type: String,
-      enum: ["manual", "website_assessment", "referral", "whatsapp", "other"],
+      enum: ["manual", "website_assessment", "wordpress_form", "referral", "whatsapp", "other"],
       default: "manual",
     },
     assessment: {
