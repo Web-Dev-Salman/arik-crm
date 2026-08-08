@@ -1,7 +1,8 @@
 import { dbConnect } from "@/lib/db";
 import { ApiError } from "@/lib/api";
 import { Contact } from "@/models/contact";
-import type { CreateContactInput, UpdateContactInput, ListContactsQuery } from "./schema";
+import type { CreateContactInput, UpdateContactInput, ListContactsQuery, ConvertProspectInput } from "./schema";
+import { createInvitation } from "@/modules/invitations/service";
 
 export async function listContacts(query: ListContactsQuery) {
   await dbConnect();
@@ -62,4 +63,34 @@ export async function softDeleteContact(id: string) {
   ).lean();
   if (!contact) throw new ApiError("CONTACT_NOT_FOUND", "Contact not found", 404);
   return { deleted: true };
+}
+
+export async function convertProspectToClient(
+  id: string,
+  input: ConvertProspectInput,
+  actorUserId: string
+) {
+  await dbConnect();
+
+  const contact = await Contact.findOne({ _id: id, deletedAt: null });
+  if (!contact) throw new ApiError("CONTACT_NOT_FOUND", "Contact not found", 404);
+  if (contact.segment !== "prospect")
+    throw new ApiError("NOT_A_PROSPECT", "Only prospects can be converted", 400);
+
+  contact.segment = "client";
+  contact.tags = (contact.tags ?? []).filter((t) => t !== "New lead");
+  await contact.save();
+
+  let invitation: { inviteUrl: string } | null = null;
+  if (input.sendInvitation) {
+    if (!contact.email)
+      throw new ApiError("EMAIL_REQUIRED", "Add an email before inviting", 400);
+    
+    invitation = await createInvitation(
+      { email: contact.email, role: "client" },
+      actorUserId
+    );
+  }
+
+  return { contact: contact.toObject(), invitation };
 }

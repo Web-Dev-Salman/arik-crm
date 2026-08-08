@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { StatusBadge, type StatusTone } from "@/components/shared/status-badge";
 import { AddContactDialog } from "./add-contact-dialog";
+import { ContactPanel, type ContactDetail } from "./contact-panel";
 
 type Contact = {
   _id: string;
@@ -43,6 +44,9 @@ export function ContactsClient({
   meta: { page: number; total: number; pages: number };
   query: { segment?: string; q?: string; page: number };
 }) {
+  // All hooks live HERE, as the first lines inside the component function —
+  // never at module top level (that's what caused the invalid hook call error).
+  const [selected, setSelected] = useState<ContactDetail | null>(null);
   const router = useRouter();
   const params = useSearchParams();
   const [pending, startTransition] = useTransition();
@@ -54,7 +58,7 @@ export function ContactsClient({
       if (v) next.set(k, v);
       else next.delete(k);
     }
-    if (!("page" in updates)) next.delete("page");   // any filter change resets to page 1
+    if (!("page" in updates)) next.delete("page"); // any filter change resets to page 1
     startTransition(() => router.push(`/contacts?${next.toString()}`));
   }
 
@@ -79,7 +83,9 @@ export function ContactsClient({
                 key={t.key}
                 onClick={() => setParam({ segment: t.key || undefined })}
                 className={`rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
-                  active ? "bg-card text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"
+                  active
+                    ? "bg-card text-foreground shadow-sm"
+                    : "text-muted-foreground hover:text-foreground"
                 }`}
               >
                 {t.label}
@@ -89,7 +95,10 @@ export function ContactsClient({
         </div>
 
         <form
-          onSubmit={(e) => { e.preventDefault(); setParam({ q: search || undefined }); }}
+          onSubmit={(e) => {
+            e.preventDefault();
+            setParam({ q: search || undefined });
+          }}
           className="ml-auto flex items-center gap-2"
         >
           <div className="flex h-9 w-64 items-center gap-2 rounded-lg border border-input bg-card px-3">
@@ -101,7 +110,9 @@ export function ContactsClient({
               className="flex-1 bg-transparent text-sm outline-none"
             />
           </div>
-          <Button type="submit" variant="outline" size="sm">Search</Button>
+          <Button type="submit" variant="outline" size="sm">
+            Search
+          </Button>
         </form>
       </div>
 
@@ -126,11 +137,19 @@ export function ContactsClient({
             </thead>
             <tbody>
               {initialItems.map((c) => (
-                <tr key={c._id} className="border-b border-border/60 last:border-0 hover:bg-secondary/50">
+                <tr
+                  key={c._id}
+                  onClick={() => setSelected(c as ContactDetail)}
+                  className="cursor-pointer border-b border-border/60 last:border-0 hover:bg-secondary/50"
+                >
                   <td className="px-5 py-3">
                     <div className="flex items-center gap-3">
                       <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-accent text-[11px] font-bold text-accent-foreground">
-                        {c.name.split(" ").map((w) => w[0]).slice(0, 2).join("")}
+                        {c.name
+                          .split(" ")
+                          .map((w) => w[0])
+                          .slice(0, 2)
+                          .join("")}
                       </div>
                       <span className="font-medium">{c.name}</span>
                     </div>
@@ -143,26 +162,32 @@ export function ContactsClient({
                   <td className="hidden px-5 py-3 text-muted-foreground md:table-cell">
                     {c.email && (
                       <div className="flex items-center gap-1.5 text-xs">
-                        <Mail className="size-3" />{c.email}
+                        <Mail className="size-3" />
+                        {c.email}
                       </div>
                     )}
                     {c.phone && (
                       <div className="flex items-center gap-1.5 text-xs">
-                        <Phone className="size-3" />{c.phone}
+                        <Phone className="size-3" />
+                        {c.phone}
                       </div>
                     )}
                   </td>
                   <td className="hidden px-5 py-3 text-muted-foreground lg:table-cell">
                     {c.location && (
                       <span className="flex items-center gap-1.5 text-xs">
-                        <MapPin className="size-3" />{c.location}
+                        <MapPin className="size-3" />
+                        {c.location}
                       </span>
                     )}
                   </td>
                   <td className="px-5 py-3">
                     <div className="flex flex-wrap gap-1">
                       {c.tags?.map((t) => (
-                        <span key={t} className="rounded-md bg-secondary px-2 py-0.5 text-[11px] text-muted-foreground">
+                        <span
+                          key={t}
+                          className="rounded-md bg-secondary px-2 py-0.5 text-[11px] text-muted-foreground"
+                        >
                           {t}
                         </span>
                       ))}
@@ -182,13 +207,17 @@ export function ContactsClient({
           </span>
           <div className="flex gap-2">
             <Button
-              variant="outline" size="sm" disabled={meta.page <= 1}
+              variant="outline"
+              size="sm"
+              disabled={meta.page <= 1}
               onClick={() => setParam({ page: String(meta.page - 1) })}
             >
               Previous
             </Button>
             <Button
-              variant="outline" size="sm" disabled={meta.page >= meta.pages}
+              variant="outline"
+              size="sm"
+              disabled={meta.page >= meta.pages}
               onClick={() => setParam({ page: String(meta.page + 1) })}
             >
               Next
@@ -196,6 +225,13 @@ export function ContactsClient({
           </div>
         </div>
       )}
+
+      <ContactPanel
+        contact={selected}
+        open={!!selected}
+        onOpenChange={(v) => !v && setSelected(null)}
+        onChanged={() => router.refresh()}
+      />
     </div>
   );
 }

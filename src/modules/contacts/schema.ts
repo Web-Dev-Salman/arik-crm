@@ -22,3 +22,7 @@ export const listContactsQuerySchema = z.object({
   q: z.string().trim().optional(),
 });
 export type ListContactsQuery = z.infer<typeof listContactsQuerySchema>;
+export const convertProspectSchema = z.object({
+  sendInvitation: z.boolean().default(false),
+});
+export type ConvertProspectInput = z.infer<typeof convertProspectSchema>;

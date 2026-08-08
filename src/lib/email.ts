@@ -1,7 +1,13 @@
 import { Resend } from "resend";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
 const dev = process.env.NODE_ENV !== "production";
+
+let resendClient: Resend | null = null;
+function getResendClient(): Resend | null {
+  if (!process.env.RESEND_API_KEY) return null;
+  if (!resendClient) resendClient = new Resend(process.env.RESEND_API_KEY);
+  return resendClient;
+}
 
 type SendEmailInput = {
   to: string;
@@ -10,8 +16,8 @@ type SendEmailInput = {
 };
 
 export async function sendEmail({ to, subject, html }: SendEmailInput) {
-  if (!process.env.RESEND_API_KEY) {
-    // No key configured (e.g. fresh clone): don't crash flows — log and move on.
+  const resend = getResendClient();
+  if (!resend) {
     console.warn("[email] RESEND_API_KEY missing — email NOT sent:", subject);
     return { skipped: true };
   }
@@ -25,8 +31,6 @@ export async function sendEmail({ to, subject, html }: SendEmailInput) {
 
   if (error) {
     console.error("[email] send failed:", error);
-    // Deliberate: we do NOT throw. Email failure shouldn't break the flow —
-    // the reset/invite still exists; user can retry or staff can copy-link.
     return { skipped: false, error };
   }
 
